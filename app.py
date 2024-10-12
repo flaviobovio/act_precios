@@ -5,7 +5,6 @@ import pandas as pd
 app = Flask(__name__)
 
 
-
 ruta_tabla = 'PRUEBA.DBF'
 
 try:
@@ -14,12 +13,11 @@ try:
 except:
     print "ERROR, no se pudo abrir el archivo ", ruta_tabla
 
-records = [[record.NUMERO, record.DESCRI, record.P_VENTA] for record in tabla]
+regs = [[reg._recnum, reg.NUMERO, reg.DESCRI, reg.P_VENTA] for reg in tabla]
 
-df = pd.DataFrame(records)
-df.columns = ['numero', 'descri', 'p_venta']
+df = pd.DataFrame(regs)
+df.columns = ['registro', 'numero', 'descri', 'p_venta']
 
-print df.head()
 
 @app.route("/")
 def index():
@@ -27,16 +25,27 @@ def index():
 
 
 
-@app.route('/buscar_producto/<codigo>', methods=['GET'])
-def buscar_producto(codigo):
+@app.route('/buscar/<codigo>', methods=['GET'])
+def buscar(codigo):
 
     producto = df[df['numero']==codigo]
-    respuesta = {
-     'numero' : producto['numero'].values[0],
-     'descri' : producto['descri'].values[0],
-     'precio' : producto['p_venta'].values[0]
-    }
+    respuesta = {}
+    if len(producto)>0:
+        respuesta = {
+            'registro' : producto['registro'].values[0],
+            'numero'   : producto['numero'].values[0],
+            'descri'   : producto['descri'].values[0],
+            'precio'   : producto['p_venta'].values[0]
+        }
     return jsonify(respuesta)
+
+
+@app.route('/cambiar/<codigo>/<precio>', methods=['PUT'])
+def cambiar(codigo, precio):
+    #'registro' : record._recnum   
+    pass 
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

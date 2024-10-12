@@ -5,6 +5,7 @@
     <br>    
     <table>
         <tr>
+            <th style="text-align: right;">Registro</th>   
             <th style="text-align: left;">Código</th>
             <th style="text-align: left;">Descripción</th>
             <th style="text-align: right;">Precio</th>                                
@@ -12,9 +13,10 @@
 
         {% for p in precios %}
             <tr>
-                <td style="text-align: left;">{{p[0]}}</td>
+                <td style="text-align: right;">{{p[0]}}</td>   
                 <td style="text-align: left;">{{p[1]}}</td>
-                <td style="text-align: right;">{{p[2]}}</td>                                
+                <td style="text-align: left;">{{p[2]}}</td>
+                <td style="text-align: right;">{{p[3]}}</td>                                
             </tr>
         {% endfor %}
 
