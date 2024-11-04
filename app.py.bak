@@ -1,0 +1,70 @@
+from flask import Flask, jsonify, request, render_template
+import dbf
+import pandas as pd
+
+app = Flask(__name__)
+
+
+ruta_tabla = 'PRUEBA.DBF'
+debug = True
+
+try:
+    tabla = dbf.Table(ruta_tabla, codepage='cp1252')
+    tabla.open(dbf.READ_WRITE)
+except:
+    print "ERROR, no se pudo abrir el archivo ", ruta_tabla
+
+regs = [[reg._recnum, reg.NUMERO, reg.DESCRI, reg.P_VENTA] for reg in tabla]
+
+df = pd.DataFrame(regs)
+df.columns = ['registro', 'numero', 'descri', 'p_venta']
+
+
+@app.route("/")
+def index():
+    return render_template('index.html', archivo=ruta_tabla, registros=len(tabla), precios=df[0:20].values.tolist())
+
+
+
+@app.route('/buscar/<codigo>', methods=['GET'])
+def buscar(codigo):
+
+    producto = df[df['numero']==codigo]
+    respuesta = {}
+    if len(producto)>0:
+        respuesta = {
+            'registro' : producto['registro'].values[0],
+            'numero'   : producto['numero'].values[0],
+            'descri'   : producto['descri'].values[0],
+            'precio'   : producto['p_venta'].values[0]
+        }
+    return jsonify(respuesta)
+
+
+@app.route('/cambiar/<n_registro>/<precio>', methods=['PUT'])
+def cambiar(n_registro, precio):
+	try:
+		registro = tabla[n_registro]
+
+		if debug:
+			print '<== Registro nro: ', registro._recnum, ' ==>'
+			print tabla[n_registro].NUMERO, tabla[n_registro].DESCRI
+			print 'Precio Anterior', tabla[n_registro].P_VENTA
+
+
+		with registro:
+			registro.P_VENTA = precio
+
+
+		if debug:
+			print 'Precio Actualizado', tabla[n_registro].P_VENTA
+			print
+
+		tabla.close()
+
+	except Exception as e:
+		print "ERROR,", e
+
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=5000, debug=True)

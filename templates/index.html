@@ -8,7 +8,8 @@
             <th style="text-align: right;">Registro</th>   
             <th style="text-align: left;">Código</th>
             <th style="text-align: left;">Descripción</th>
-            <th style="text-align: right;">Precio</th>                                
+            <th style="text-align: right;">Precio Anterior</th>
+            <th style="text-align: right;">Precio Actualizado</th>
         </tr>
 
         {% for p in precios %}
@@ -17,6 +18,7 @@
                 <td style="text-align: left;">{{p[1]}}</td>
                 <td style="text-align: left;">{{p[2]}}</td>
                 <td style="text-align: right;">{{"%.1f"%p[3]}}</td>                                
+                <td style="text-align: right;">{{"%.1f"%p[4]}}</td>
             </tr>
         {% endfor %}
 
