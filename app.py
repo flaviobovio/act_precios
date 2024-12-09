@@ -1,21 +1,33 @@
 from flask import Flask, jsonify, request, render_template
 import dbf
 import pandas as pd
+import logging
+from logging.handlers import TimedRotatingFileHandler
+import os
 
 app = Flask(__name__)
 
+# Set up logging
+log_directory = "logs" # Must exists
+log_file = os.path.join(log_directory, "app.log")
+handler = TimedRotatingFileHandler(log_file, when="midnight", interval=1, backupCount=7)
+handler.suffix = "%Y-%m-%d"
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+
+app.logger.addHandler(handler)
+app.logger.setLevel(logging.INFO)
+
+# DBF Table setup
 ruta_tabla = 'PRUEBA.DBF'
 debug = True
 
 try:
     tabla = dbf.Table(ruta_tabla, codepage='cp1252')
     tabla.open(dbf.READ_WRITE)
+    app.logger.info("DBF file opened successfully: %s", ruta_tabla)
 except Exception as e:
-    print "ERROR, no se pudo abrir el archivo ", ruta_tabla, ":", e
-
-# regs = [[reg._recnum, reg.NUMERO, reg.DESCRI, reg.P_VENTA] for reg in tabla]
-# df = pd.DataFrame(regs)
-# df.columns = ['registro', 'numero', 'descri', 'p_venta']
+    app.logger.error("ERROR: Could not open DBF file %s: %s", ruta_tabla, e)
 
 precios = []
 
@@ -25,16 +37,22 @@ def index():
 
 @app.route('/buscar/<codigo>', methods=['GET'])
 def buscar(codigo):
-    respuesta = {'status' : 'Not found'}
-    with tabla: 
-        for record in tabla:
-            if record.NUMERO == codigo:
-                respuesta = {'registro' : record._recnum,
-                            'codigo' : record.NUMERO,
-                            'descripcion' : record.DESCRI,
-                            'precio' : record.P_VENTA
-                            }
-                break
+    respuesta = {'status': 'Not found'}
+    try:
+        with tabla:
+            for record in tabla:
+                if record.NUMERO == codigo:
+                    respuesta = {
+                        'registro': record._recnum,
+                        'codigo': record.NUMERO,
+                        'descripcion': record.DESCRI,
+                        'precio': record.P_VENTA
+                    }
+                    break
+        app.logger.info("Search completed for codigo: %s, result: %s", codigo, respuesta)
+    except Exception as e:
+        app.logger.error("ERROR during search: %s", e)
+        respuesta = {'status': 'error', 'message': str(e)}
 
     return jsonify(respuesta)
 
@@ -43,24 +61,19 @@ def cambiar(n_registro, precio):
     global precios
     try:
         record = tabla[int(n_registro)]
-
-        if debug:
-            print '<== Registro nro: ', record._recnum, ' ==>'
-            print 'NUMERO:', record.NUMERO, 'DESCRI:', record.DESCRI
-            print 'Precio Anterior:', record.P_VENTA
-
+        precio_anterior = float(record.P_VENTA)
         with record:
-            precio_anterior = float(record.P_VENTA)
             record.P_VENTA = float(precio)
             precios.append([n_registro, record.NUMERO, record.DESCRI, precio_anterior, record.P_VENTA])
 
-        if debug:
-            print 'Precio Actualizado:', record.P_VENTA
+        app.logger.info(
+            "Updated record %d: NUMERO=%s, DESCRI=%s, Precio Anterior=%.2f, Precio Nuevo=%.2f",
+            record._recnum, record.NUMERO, record.DESCRI, precio_anterior, record.P_VENTA
+        )
 
         return jsonify({'status': 'success', 'precio': record.P_VENTA})
-
     except Exception as e:
-        print "ERROR:", e
+        app.logger.error("ERROR during update: %s", e)
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 if __name__ == '__main__':
