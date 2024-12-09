@@ -1,27 +1,99 @@
-<div>
-    <h3>Actualizador de precios</h3>
-    <li>Ruta Archivo: {{archivo}}</li>
-    <li>Cantidad Registros: {{registros}}</li>
-    <br>    
-    <table>
-        <tr>
-            <th style="text-align: right;">Registro</th>   
-            <th style="text-align: left;">Código</th>
-            <th style="text-align: left;">Descripción</th>
-            <th style="text-align: right;">Precio Anterior</th>
-            <th style="text-align: right;">Precio Actualizado</th>
-        </tr>
-
-        {% for p in precios %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="30">    
+    <title>Actualizador de precios</title>
+</head>
+<body>
+    <div>
+        <h3>Actualizador de precios</h3>
+        <li>Ruta Archivo: {{archivo}}</li>
+        <li>Cantidad Registros: {{registros}}</li>
+        <br>    
+        <table>
             <tr>
-                <td style="text-align: right;">{{p[0]}}</td>   
-                <td style="text-align: left;">{{p[1]}}</td>
-                <td style="text-align: left;">{{p[2]}}</td>
-                <td style="text-align: right;">{{"%.1f"%p[3]}}</td>                                
-                <td style="text-align: right;">{{"%.1f"%p[4]}}</td>
+                <th>Registro</th>   
+                <th>Código</th>
+                <th>Descripción</th>
+                <th>Precio Anterior</th>
+                <th>Precio Actualizado</th>
             </tr>
-        {% endfor %}
 
-    </table>
+            {% for p in precios %}
+                <tr>
+                    <td>{{p[0]}}</td>   
+                    <td>{{p[1]}}</td>
+                    <td>{{p[2]}}</td>
+                    <td>{{"%.1f"%p[3]}}</td>                                
+                    <td>{{"%.1f"%p[4]}}</td>
+                </tr>
+            {% endfor %}
 
-</div>
+        </table>
+    </div>
+</body>
+</html>
+
+
+
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f8f9fa;
+        color: #333;
+    }
+
+    h3 {
+        color: #007bff;
+    }
+
+    div {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 20px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    li {
+        margin-bottom: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #007bff;
+        color: #ffffff;
+        text-align: left;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #e9ecef;
+    }
+
+    td {
+        text-align: left;
+    }
+
+    td:nth-child(1), td:nth-child(4), td:nth-child(5) {
+        text-align: right;
+    }
+</style>
