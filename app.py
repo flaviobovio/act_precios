@@ -71,7 +71,7 @@ def cambiar(n_registro, precio):
             record._recnum, record.NUMERO, record.DESCRI, precio_anterior, record.P_VENTA
         )
 
-        return jsonify({'status': 'success', 'precio': record.P_VENTA})
+        return jsonify({'status': 'success', 'precio': record.P_VENTA}), 200
     except Exception as e:
         app.logger.error("ERROR during update: %s", e)
         return jsonify({'status': 'error', 'message': str(e)}), 500
