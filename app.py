@@ -1,16 +1,31 @@
 from flask import Flask, jsonify, request, render_template
 import dbf
-import pandas as pd
 import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
+import ConfigParser
+
+
+
+
 
 app = Flask(__name__)
 
+
+
+# Read configuration from config.ini 
+config = ConfigParser.ConfigParser()
+config.read('config.ini')
+
+app.config['DEBUG'] = config.getboolean('default', 'DEBUG')
+app.config['RUTA_TABLA'] = config.get('default', 'RUTA_TABLA')
+
+
+
 # Set up logging
-log_directory = "logs" # Must exists
+log_directory = "logs" # Must exist
 log_file = os.path.join(log_directory, "app.log")
-handler = TimedRotatingFileHandler(log_file, when="midnight", interval=1, backupCount=7)
+handler = TimedRotatingFileHandler(log_file, when="midnight", interval=1, backupCount=30)
 handler.suffix = "%Y-%m-%d"
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
@@ -18,22 +33,22 @@ handler.setFormatter(formatter)
 app.logger.addHandler(handler)
 app.logger.setLevel(logging.INFO)
 
-# DBF Table setup
-ruta_tabla = 'PRUEBA.DBF'
-debug = True
+
+
+
 
 try:
-    tabla = dbf.Table(ruta_tabla, codepage='cp1252')
+    tabla = dbf.Table(app.config['RUTA_TABLA'], codepage='cp1252')
     tabla.open(dbf.READ_WRITE)
-    app.logger.info("DBF file opened successfully: %s", ruta_tabla)
+    app.logger.info("DBF file opened successfully: %s", app.config['RUTA_TABLA'])
 except Exception as e:
-    app.logger.error("ERROR: Could not open DBF file %s: %s", ruta_tabla, e)
+    app.logger.error("ERROR: Could not open DBF file %s: %s", app.config['RUTA_TABLA'], e)
 
 precios = []
 
 @app.route("/")
 def index():
-    return render_template('index.html', archivo=ruta_tabla, registros=len(tabla), precios=precios)
+    return render_template('index.html', archivo=app.config['RUTA_TABLA'], registros=len(tabla), precios=precios)
 
 @app.route('/buscar/<codigo>', methods=['GET'])
 def buscar(codigo):
@@ -77,4 +92,4 @@ def cambiar(n_registro, precio):
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000)
