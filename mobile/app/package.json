@@ -1,0 +1,20 @@
+{
+  "name": "barcode-scanner-app",
+  "main": "app/app.js",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.1",
+    "@nativescript/core": "~8.8.0",
+    "@nativescript/theme": "^3.1.0",
+    "@nstudio/nativescript-barcodescanner": "^5.0.1",
+    "@triniwiz/nativescript-toasty": "^4.1.3",
+    "dotenv": "^16.4.7",
+    "nativescript-vue": "~2.9.3"
+  },
+  "devDependencies": {
+    "@nativescript/android": "8.8.6",
+    "@nativescript/webpack": "~5.0.0",
+    "nativescript-vue-template-compiler": "~2.9.3"
+  }
+}
