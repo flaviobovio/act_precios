@@ -4,7 +4,7 @@
       <StackLayout>
         <FlexboxLayout flexDirection="row" justifyContent="space-between">
           <label text="Actualizador de Precios" class="applabel"/>
-          <button class="far" text.decode="&#xf185;"  style="font-size: 20px;text-align: right; padding: 2px;" @tap="configApp" />
+          <button class="far" text.decode="&#xf185;"  style="font-size: 20px;" @tap="configApp" />
         </FlexboxLayout>
         <FlexboxLayout flexDirection="row" justifyContent="space-between">
           <label text="by 30vio" class="vendorlabel"/>
@@ -228,14 +228,13 @@ export default {
 }
 
 .actionbar {
-  background-color: rgb(61, 61, 196);
+  background-color: rgb(13, 37, 55);
 }
 
 .applabel {
   text-align: right;
   font-size: 18px;
   font-weight: bold;
-  padding: 2px;  
 }
 
 .vendorlabel {
@@ -243,7 +242,6 @@ export default {
   vertical-align: bottom;
   font-size: 10px;
   font-style: italic;
-  padding: 2px;
 }
 
 
@@ -296,7 +294,7 @@ export default {
   flex-basis: 45%;
   margin: 0 5px; */
   margin-top: 10px;
-  background-color: rgb(61, 61, 196);
+  background-color: rgb(13, 37, 55);
   color: white;
   border-radius: 16px;
   font-size: 16px;
@@ -314,7 +312,7 @@ export default {
   font-weight: 400;
   font-size: 36; /* Adjust the font size */
   color: white; /* Adjust the color */
-  background-color: rgb(61, 61, 196);  
+  background-color: rgb(13, 37, 55);  
 }
 
 
@@ -323,7 +321,7 @@ export default {
   font-weight: 400;
   font-size: 36; /* Adjust the font size */
   color: white; /* Adjust the color */
-  background-color: rgb(61, 61, 196);  
+  background-color: rgb(13, 37, 55);  
 
 }
 
