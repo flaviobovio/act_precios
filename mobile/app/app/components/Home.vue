@@ -16,8 +16,8 @@
 
       <Label text="Escanear o ingresar código de barra" class="label" />
       <FlexboxLayout class="button-row" flexDirection="row" justifyContent="space-between">
-        <Button class="code-button fas" text.decode="&#xf02a;" @tap="scanBarcode" />         
-        <Button class="code-button far" text.decode="&#xf11c;" @tap="typeBarcode" />
+        <Button class="button fas" text.decode="&#xf02a;" @tap="scanBarcode" />         
+        <Button class="button far" text.decode="&#xf11c;" @tap="typeBarcode" />
       </FlexboxLayout>
       
       <Label text="" />
@@ -49,7 +49,7 @@
           text="Actualizar Precio"
           :isEnabled="!!updatedPrice"
           @tap="updatePrice(apiResponse.registro, updatedPrice)"
-          class="update-button"
+          class="button"
         />      
 
 
@@ -228,7 +228,7 @@ export default {
 }
 
 .actionbar {
-  background-color: rgb(13, 37, 55);
+  background-color: rgb(20, 68, 108);
 }
 
 .applabel {
@@ -287,23 +287,14 @@ export default {
 
 
 
-.code-button {
+.button {
   flex: 1; /* Ambos botones ocupan el mismo espacio */
   margin: 0 8px; /* Espaciado uniforme entre botones */  
-  /* flex-grow: 1;
-  flex-basis: 45%;
-  margin: 0 5px; */
   margin-top: 10px;
-  background-color: rgb(13, 37, 55);
+  background-color: rgb(20, 68, 108);
   color: white;
   border-radius: 16px;
   font-size: 16px;
-}
-.update-button {
-  margin-top: 10px;
-  background-color: green;
-  color: white;
-  border-radius: 8px;
 }
 
 
@@ -312,7 +303,7 @@ export default {
   font-weight: 400;
   font-size: 36; /* Adjust the font size */
   color: white; /* Adjust the color */
-  background-color: rgb(13, 37, 55);  
+  background-color: rgb(20, 68, 108);  
 }
 
 
@@ -321,7 +312,7 @@ export default {
   font-weight: 400;
   font-size: 36; /* Adjust the font size */
   color: white; /* Adjust the color */
-  background-color: rgb(13, 37, 55);  
+  background-color: rgb(20, 68, 108);  
 
 }
 
