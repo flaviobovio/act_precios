@@ -35,14 +35,30 @@ app.logger.setLevel(logging.INFO)
 
 
 
+def open_table(table_name, codepage='cp1252'):
+    try:
+        table = dbf.Table(table_name, codepage=codepage)
+        table.open(dbf.READ_WRITE)
+        app.logger.info("DBF file opened successfully: %s", app.config['RUTA_TABLA'])
+        return table
+    except Exception as e:
+        app.logger.error("ERROR: Could not open DBF file %s: %s", app.config['RUTA_TABLA'], e)
+        return None
 
 
-try:
-    tabla = dbf.Table(app.config['RUTA_TABLA'], codepage='cp1252')
-    tabla.open(dbf.READ_WRITE)
-    app.logger.info("DBF file opened successfully: %s", app.config['RUTA_TABLA'])
-except Exception as e:
-    app.logger.error("ERROR: Could not open DBF file %s: %s", app.config['RUTA_TABLA'], e)
+def close_table(table_object):
+    try:
+        table_object.close()
+        app.logger.info("DBF file closed successfully: %s", app.config['RUTA_TABLA'])
+    except Exception as e:
+        app.logger.error("ERROR: Could not close DBF file %s: %s", app.config['RUTA_TABLA'], e)
+
+
+
+
+
+tabla = open_table(app.config['RUTA_TABLA'])
+close_table(tabla)
 
 precios = []
 
@@ -54,6 +70,7 @@ def index():
 def buscar(codigo):
     respuesta = {'status': 'Not found'}
     try:
+        tabla = open_table(app.config['RUTA_TABLA'])
         with tabla:
             for record in tabla:
                 if record.NUMERO == codigo:
@@ -69,12 +86,14 @@ def buscar(codigo):
         app.logger.error("ERROR during search: %s", e)
         respuesta = {'status': 'error', 'message': str(e)}
 
+    close_table(tabla)
     return jsonify(respuesta)
 
 @app.route('/cambiar/<int:n_registro>/<float:precio>', methods=['PUT'])
 def cambiar(n_registro, precio):
     global precios
     try:
+        tabla = open_table(app.config['RUTA_TABLA'])
         record = tabla[int(n_registro)]
         precio_anterior = float(record.P_VENTA)
         with record:
@@ -85,10 +104,13 @@ def cambiar(n_registro, precio):
             "Updated record %d: NUMERO=%s, DESCRI=%s, Precio Anterior=%.2f, Precio Nuevo=%.2f",
             record._recnum, record.NUMERO, record.DESCRI, precio_anterior, record.P_VENTA
         )
+        close_table(tabla)
 
         return jsonify({'status': 'success', 'precio': record.P_VENTA}), 200
     except Exception as e:
         app.logger.error("ERROR during update: %s", e)
+        close_table(tabla)
+
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 if __name__ == '__main__':

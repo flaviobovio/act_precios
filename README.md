@@ -14,7 +14,7 @@ This repository contains the source code for both the backend and the mobile app
       git clone https://github.com/flaviobovio/act_precios.git  
       cd act_precios
 
-   2. Backend
+   2. Backend  
       In the backend folder
 
       config.ini stores backend configuration
@@ -33,7 +33,7 @@ This repository contains the source code for both the backend and the mobile app
       docker run -it -v .:/app -p 8080:8080 python2-bash
       ```
 
-   3. Mobile
+   3. Mobile  
       In the mobile folder
 
       Install NativeScript Vue

@@ -14,7 +14,7 @@ RUN pip install -r requirements.txt
 WORKDIR /app
 
 # bash
-#CMD ["bash"]
+CMD ["bash"]
 
 # Flask production
-CMD ["waitress-serve", "--host=0.0.0.0", "--port=8080", "app:app"]
+#CMD ["waitress-serve", "--host=0.0.0.0", "--port=8080", "app:app"]
