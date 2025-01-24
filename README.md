@@ -45,4 +45,7 @@ This repository contains the source code for both the backend and the mobile app
       - dotenv@16.4.
 
 
+## Screenshots ##
+App / Backend Logging
 
+![Mobile App](img/app_small.jpeg "Mobile App")   ![Backend Logging](img/backend_small.jpg "Backend Logging")
